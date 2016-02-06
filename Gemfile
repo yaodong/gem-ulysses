@@ -1,5 +1,4 @@
 source 'https://rubygems.org'
 
-gem 'nokogiri'
-gem 'kramdown'
-gem 'htmlentities'
+# Specify your gem's dependencies in ulysses.gemspec
+gemspec
