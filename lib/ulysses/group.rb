@@ -13,6 +13,7 @@ module Ulysses
     end
 
     def children
+      [] if @info['childOrder'].nil?
       @info['childOrder'].children.map do |child|
         Group.new File.join(@dirname, child.content, 'Info.ulgroup') if child.element?
       end.compact
