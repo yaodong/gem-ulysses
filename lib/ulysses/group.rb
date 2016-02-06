@@ -19,10 +19,14 @@ module Ulysses
     end
 
     def sheets
-      list = @info['sheetClusters'].children.find { |child| child.element? && child.name == 'array' }
-      list.children.map do |child|
-        Sheet.new File.join(@dirname, child.content) if child.element? && child.name == 'string'
-      end.compact
+      list = @info['sheetClusters'].children.select { |c| c.element? && c.name == 'array' }
+      list = list.map do |i|
+        content_node = i.children.find { |c| c.element? && c.name == 'string' }
+        content_node.content
+      end
+      list.map do |dirname|
+        Sheet.new File.join(@dirname, dirname)
+      end
     end
 
     private
