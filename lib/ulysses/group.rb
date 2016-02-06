@@ -20,6 +20,7 @@ module Ulysses
     end
 
     def sheets
+      return [] if @info['sheetClusters'].nil?
       list = @info['sheetClusters'].children.select { |c| c.element? && c.name == 'array' }
       list = list.map do |i|
         content_node = i.children.find { |c| c.element? && c.name == 'string' }
