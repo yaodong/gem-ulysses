@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ulysses (0.3.0)
+    ulysses (0.3.2)
       htmlentities
       kramdown
       nokogiri
