@@ -8,6 +8,10 @@ module Ulysses
       @info    = parse_info(info_file_path)
     end
 
+    def display_name
+      @display_name = @info['displayName'].content
+    end
+
     def children
       @info['childOrder'].children.map do |child|
         Group.new File.join(@dirname, child.content, 'Info.ulgroup') if child.element?

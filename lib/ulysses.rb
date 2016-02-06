@@ -5,6 +5,7 @@ require 'ulysses/library'
 require 'ulysses/group'
 require 'ulysses/sheet'
 require 'ulysses/exporter'
+require 'ulysses/version'
 
 module Ulysses
 
