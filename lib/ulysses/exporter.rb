@@ -265,6 +265,7 @@ module Ulysses
     end
 
     def append_footnotes(html)
+      return html if @footnotes.empty?
       footnote_html = '<div class="footnotes">'
       @footnotes.each_with_index do |fn, index|
         html.gsub! /<placeholder-footnote-#{index}\/>/, "<sup><a href=\"#fn#{index}\" id=\"ref#{index}\">#{index}</a></sup>"
@@ -274,12 +275,12 @@ module Ulysses
     end
 
     def append_annotations(html)
+      return html if @annotations.empty?
       annotations_html = '<div class="annotations">'
       @annotations.each_with_index do |at, index|
         html.gsub! /<placeholder-annotation-#{index}/, "<span class=\"annotated\" data-annotation=\"#{index}\">#{at[0]}</span>"
         annotations_html += "<section data-annotation=\"#{index}\">" + at[1] + '</section>'
       end
-
       html + "\n\n" + annotations_html + "</div>\n"
     end
 
