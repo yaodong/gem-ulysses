@@ -4,41 +4,57 @@ module Ulysses
     attr_reader :dirname
 
     def initialize(info_file_path)
-      @dirname = File.dirname(info_file_path)
-      @info    = parse_info(info_file_path)
+      @info_file = info_file_path
+      @dirname   = File.dirname(@info_file)
+    end
+
+    def info
+      @info ||= parse_info
     end
 
     def display_name
-      @display_name = @info['displayName'].content
+      @display_name ||= info['displayName'].content
     end
 
     def children
-      return [] if @info['childOrder'].nil?
-      @info['childOrder'].children.map do |child|
-        Group.new File.join(@dirname, child.content, 'Info.ulgroup') if child.element?
-      end.compact
+      @children ||= parse_children
     end
+    alias :groups :children
 
     def sheets
-      return [] if @info['sheetClusters'].nil?
-      list = @info['sheetClusters'].children.select { |c| c.element? && c.name == 'array' }
-      list = list.map do |i|
-        content_node = i.children.find { |c| c.element? && c.name == 'string' }
-        content_node.content
-      end
-      list.map do |dirname|
-        Sheet.new File.join(@dirname, dirname)
-      end
+      @sheets ||= parse_sheets
+    end
+
+    def reload
+      @info, @children, @sheets = nil
     end
 
     private
 
-    def parse_info(file_path)
-      xml  = Nokogiri::XML File.read(file_path)
-      dict = xml.xpath('//dict').children.map do |child|
-        (child.name == 'key' ? child.content : child) if child.element?
-      end.compact
+    def parse_info
+      xml  = Nokogiri::XML File.read(@info_file)
+      dict = xml.xpath('//dict')
+                 .children
+                 .select { |child| child.element? }
+                 .map { |child| child.name == 'key' ? child.content : child }
       Hash[*dict]
+    end
+
+    def parse_sheets
+      return [] unless info['sheetClusters']
+      info['sheetClusters']
+          .children
+          .select { |c| c.element? && c.name == 'array' }
+          .map { |i| i.children.find { |c| c.element? && c.name == 'string' }.content }
+          .map { |dir| Sheet.new File.join(@dirname, dir) }
+    end
+
+    def parse_children
+      return [] unless info['childOrder']
+      info['childOrder']
+          .children
+          .select { |child| child.element? }
+          .map { |child| Group.new File.join(@dirname, child.content, 'Info.ulgroup') }
     end
 
   end
