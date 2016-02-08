@@ -7,17 +7,16 @@ module Ulysses
       @dirname = dirname
     end
 
-    def reload
-      @content = nil
-      @text    = nil
-    end
-
-    def content
-      @content ||= File.read(File.join(@dirname, 'Content.xml'))
+    def xml
+      @xml ||= File.read(File.join(@dirname, 'Content.xml'))
     end
 
     def to_html
-      Exporter.new(content).to_html
+      @html ||= Exporter.new(xml).to_html
+    end
+
+    def reload
+      @xml, @html = nil
     end
 
   end
