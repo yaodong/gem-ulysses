@@ -1,6 +1,6 @@
 # Ulysses
 
-[![Join the chat at https://gitter.im/yaodong/gem-ulysses](https://badges.gitter.im/yaodong/gem-ulysses.svg)](https://gitter.im/yaodong/gem-ulysses?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat at https://gitter.im/yaodong/gem-ulysses](https://badges.gitter.im/yaodong/gem-ulysses.svg)](https://gitter.im/yaodong/gem-ulysses?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Code Climate](https://codeclimate.com/github/yaodong/gem-ulysses/badges/gpa.svg)](https://codeclimate.com/github/yaodong/gem-ulysses)
 
 This is a library to export your to HTML files. It still in development.
 
