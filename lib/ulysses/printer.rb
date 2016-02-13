@@ -1,8 +1,10 @@
 module Ulysses
   class Printer
 
-    INLINE_MARKUPS = %w(strong emph mark delete inlineComment code inlineNative)
     SHEET_CONTENT_XPATH = '/sheet/string[@xml:space="preserve"]'
+    INLINE_MARKUPS = { strong: 'strong', emph: 'em', mark: 'mark',
+                       delete: 'del', code: 'code', inlineNative: 'span' }
+    HIDDEN_MARKUPS = [:inlineComment]
 
     def initialize(target)
       @target        = target
@@ -86,16 +88,15 @@ module Ulysses
     end
 
     def parse_element(node)
-      kind = node.attributes['kind'].value
-      if INLINE_MARKUPS.include?(kind)
-        parse_inline_style(kind, node)
-      else
-        send "parse_element_#{node.attributes['kind'].value}", node
-      end
-    end
+      kind = node.attributes['kind'].value.to_sym
+      return '' if HIDDEN_MARKUPS.include? kind
+      return send("parse_element_#{kind}", node) unless INLINE_MARKUPS.has_key?(kind)
 
-    def parse_inline_style(markup, node)
-      '<span class="' + snake_case(markup) + '">' + parse_content(node.children) + '</span>'
+      if (html_tag = INLINE_MARKUPS[kind]) === 'span'
+        '<span class="' + snake_case(kind) + '">' + parse_content(node.children) + '</span>'
+      else
+        "<#{html_tag}>#{parse_content(node.children)}</#{html_tag}>"
+      end
     end
 
     def parse_element_link(node)
@@ -135,7 +136,7 @@ module Ulysses
     end
 
     def snake_case(tag)
-      tag.gsub(/::/, '/')
+      tag.to_s.gsub(/::/, '/')
           .gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2')
           .gsub(/([a-z\d])([A-Z])/,'\1_\2')
           .gsub(/([a-z])(\d)/i, '\1_\2')
