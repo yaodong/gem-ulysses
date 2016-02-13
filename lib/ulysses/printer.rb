@@ -50,18 +50,7 @@ module Ulysses
       children = p.children
       tags     = (children.any? && children.first.name === 'tags') ? parse_tags(children.shift) : []
       content  = parse_content(children)
-
-      tabs = tags.count('tab')
-      if tabs > 0
-        tags.delete('tab')
-        tags << "tabs_#{tabs}"
-      end
-      if tags.any?
-        tags = tags.uniq.map{|t| snake_case(t)}.join(' ')
-        "<p class=\"#{tags}\">#{content}</p>"
-      else
-        "<p>#{content}</p>"
-      end
+      "<p class=\"#{parse_line_class(tags)}\">#{content}</p>"
     end
 
     def parse_content(nodes)
@@ -152,6 +141,16 @@ module Ulysses
           .gsub(/([a-z])(\d)/i, '\1_\2')
           .tr('-', '_')
           .downcase
+    end
+
+    def parse_line_class(tags)
+      tabs = tags.count('tab')
+      if tabs > 0
+        tags.delete('tab')
+        tags << "tabs_#{tabs}"
+      end
+      tags.unshift 'line'
+      tags.uniq.map{|t| snake_case(t)}.join(' ')
     end
 
   end
