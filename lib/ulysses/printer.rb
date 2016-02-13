@@ -5,6 +5,7 @@ module Ulysses
     INLINE_MARKUPS = { strong: 'strong', emph: 'em', mark: 'mark',
                        delete: 'del', code: 'code', inlineNative: 'span' }
     HIDDEN_MARKUPS = [:inlineComment]
+    HIDDEN_BLOCKS  = [:comment]
 
     def initialize(target)
       @target        = target
@@ -45,14 +46,23 @@ module Ulysses
 
     def print_sheet(sheet)
       paragraphs = sheet.xml.xpath(SHEET_CONTENT_XPATH).children.select { |n| n.element? }
-      paragraphs.map{ |p| print_paragraph(p) }.join("\n")
+      paragraphs.map{ |p| print_paragraph(p) }.compact.join("\n")
     end
 
     def print_paragraph(p)
       children = p.children
       tags     = (children.any? && children.first.name === 'tags') ? parse_tags(children.shift) : []
-      content  = parse_content(children)
-      "<p class=\"#{parse_line_class(tags)}\">#{content}</p>"
+      return nil if (tags & HIDDEN_BLOCKS).any?
+
+      content = parse_content(children)
+
+      heading_tag = tags.find {|t| t.to_s.start_with? 'heading' }
+      if heading_tag
+        heading_level = /heading(\d)/.match(heading_tag)[1]
+        "<h#{heading_level}>#{content}</h#{heading_level}>"
+      else
+        "<p class=\"#{parse_line_class(tags)}\">#{content}</p>"
+      end
     end
 
     def parse_content(nodes)
@@ -68,9 +78,9 @@ module Ulysses
     def parse_tags(tags)
       tags.children.map do |tag|
         if tag.attributes.has_key? 'kind'
-          tag.attributes['kind'].value
+          tag.attributes['kind'].value.to_sym
         elsif tag.content === "\t"
-          'tab'
+          :tab
         end
       end
     end
@@ -145,13 +155,13 @@ module Ulysses
     end
 
     def parse_line_class(tags)
-      tabs = tags.count('tab')
-      if tabs > 0
-        tags.delete('tab')
-        tags << "tabs_#{tabs}"
+      tabs = tags.count(:tab)
+      if tabs > 1
+        tags.delete(:tab)
+        tags << :"tabs_#{tabs}"
       end
-      tags.unshift 'line'
-      tags.uniq.map{|t| snake_case(t)}.join(' ')
+      tags.unshift :line
+      tags.uniq.map{ |t| snake_case(t) }.join(' ')
     end
 
   end
