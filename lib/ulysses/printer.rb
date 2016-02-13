@@ -1,6 +1,7 @@
 module Ulysses
   class Printer
 
+    INLINE_MARKUPS = %w(strong emph mark delete inlineComment code inlineNative)
     SHEET_CONTENT_XPATH = '/sheet/string[@xml:space="preserve"]'
 
     def initialize(target)
@@ -55,8 +56,12 @@ module Ulysses
         tags.delete('tab')
         tags << "tabs_#{tabs}"
       end
-      tags = tags.uniq.map{|t| normalize_tag(t)}.join(' ')
-      "<p class=\"#{tags}\">#{content}</p>"
+      if tags.any?
+        tags = tags.uniq.map{|t| snake_case(t)}.join(' ')
+        "<p class=\"#{tags}\">#{content}</p>"
+      else
+        "<p>#{content}</p>"
+      end
     end
 
     def parse_content(nodes)
@@ -92,10 +97,55 @@ module Ulysses
     end
 
     def parse_element(node)
-      send "parse_element_#{node.attributes['kind'].value}", node
+      kind = node.attributes['kind'].value
+      if INLINE_MARKUPS.include?(kind)
+        parse_inline_style(kind, node)
+      else
+        send "parse_element_#{node.attributes['kind'].value}", node
+      end
     end
 
-    def normalize_tag(tag)
+    def parse_inline_style(markup, node)
+      '<span class="' + snake_case(markup) + '">' + parse_content(node.children) + '</span>'
+    end
+
+    def parse_element_link(node)
+      attrs   = parse_element_attributes(node)
+      content = parse_content(node.children.select{ |child| !child.element? || child.name != 'attribute' })
+      '<a href="' + attrs.fetch('URL', '') + '" title="' + attrs.fetch('title', '') + '">' + content + '</a>'
+    end
+
+    def parse_element_image(node)
+      attrs = parse_element_attributes(node)
+      '<img src="' + attrs.fetch('URL', '') + '" alt="' + attrs.fetch('title', '') + '" />'
+    end
+
+    def parse_element_video(node)
+      attrs = parse_element_attributes(node)
+      '<video><source src="' + attrs['URL'] + '" /></video>'
+    end
+
+    def parse_element_footnote(node)
+      attrs = parse_element_attributes(node)
+      @footnotes << attrs['text']
+      '<sup class="footnote-ref"><a href="#fn' + @footnotes.size.to_s + '">' + @footnotes.size.to_s + '</a></sup>'
+    end
+
+    def parse_element_annotation(node)
+      attrs = parse_element_attributes(node)
+      @annotations << attrs['text']
+      '<span class="annotation" data-id="' + @annotations.size.to_s + '">' + @annotations.size.to_s + '</span>'
+    end
+
+    def parse_element_attributes(element)
+      attributes = element.children.select { |child| child.element? && child.name === 'attribute' }
+      attributes.map! do |attr|
+        [attr.attributes['identifier'].value, parse_content(attr.children)]
+      end
+      Hash[attributes]
+    end
+
+    def snake_case(tag)
       tag.gsub(/::/, '/')
           .gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2')
           .gsub(/([a-z\d])([A-Z])/,'\1_\2')
