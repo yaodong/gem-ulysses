@@ -39,10 +39,10 @@ Get Sheets:
 
     group.sheets
     
-Export sheet to HTML:
+Print sheet to HTML:
 
-    sheet = group.sheets.first
-    html  = sheet.to_html
+    printer = Ulysses::Printer.new(library) # also applies to group or sheet 
+    html = printer.print
 
 ## Development
 
