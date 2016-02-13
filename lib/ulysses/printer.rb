@@ -49,7 +49,14 @@ module Ulysses
       children = p.children
       tags     = (children.any? && children.first.name === 'tags') ? parse_tags(children.shift) : []
       content  = parse_content(children)
-      "<p class=\"#{tags.join(' ')}\">#{content}</p>"
+
+      tabs = tags.count('tab')
+      if tabs > 0
+        tags.delete('tab')
+        tags << "tabs_#{tabs}"
+      end
+      tags = tags.uniq.map{|t| normalize_tag(t)}.join(' ')
+      "<p class=\"#{tags}\">#{content}</p>"
     end
 
     def parse_content(nodes)
@@ -86,6 +93,15 @@ module Ulysses
 
     def parse_element(node)
       send "parse_element_#{node.attributes['kind'].value}", node
+    end
+
+    def normalize_tag(tag)
+      tag.gsub(/::/, '/')
+          .gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2')
+          .gsub(/([a-z\d])([A-Z])/,'\1_\2')
+          .gsub(/([a-z])(\d)/i, '\1_\2')
+          .tr('-', '_')
+          .downcase
     end
 
   end

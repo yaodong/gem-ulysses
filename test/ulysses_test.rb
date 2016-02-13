@@ -7,10 +7,13 @@ class UlyssesTest < Minitest::Test
 
   def test_print
     library_path = File.expand_path(File.join(__dir__, 'fixtures', 'library'))
-    export_file  = File.expand_path(File.join(__dir__, 'fixtures', 'print.html'))
     library = Ulysses::Library.new library_path
-    printer = Ulysses::Printer.new(library)
-    assert_equal File.read(export_file), printer.print
+
+    fixture  = File.expand_path(File.join(__dir__, 'fixtures', 'print.html'))
+    expected = File.read(fixture)
+    printed  = Ulysses::Printer.new(library).print
+
+    assert_equal expected, printed
   end
 
 end
