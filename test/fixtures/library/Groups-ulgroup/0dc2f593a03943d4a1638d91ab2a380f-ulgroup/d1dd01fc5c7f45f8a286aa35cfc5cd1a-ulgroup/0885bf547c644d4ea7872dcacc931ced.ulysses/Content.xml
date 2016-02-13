@@ -1,0 +1,69 @@
+<sheet version="1">
+<markup version="1" identifier="markdownxl" displayName="Markdown XL">
+	<tag definition="heading1" pattern="#"></tag>
+	<tag definition="heading2" pattern="##"></tag>
+	<tag definition="heading3" pattern="###"></tag>
+	<tag definition="heading4" pattern="####"></tag>
+	<tag definition="heading5" pattern="#####"></tag>
+	<tag definition="heading6" pattern="######"></tag>
+	<tag definition="codeblock" pattern="''"></tag>
+	<tag definition="comment" pattern="%%"></tag>
+	<tag definition="divider" pattern="----"></tag>
+	<tag definition="nativeblock" pattern="~~"></tag>
+	<tag definition="blockquote" pattern="&gt;"></tag>
+	<tag definition="orderedList" pattern="\d."></tag>
+	<tag definition="unorderedList" pattern="*"></tag>
+	<tag definition="unorderedList" pattern="+"></tag>
+	<tag definition="unorderedList" pattern="-"></tag>
+	<tag definition="code" startPattern="`" endPattern="`"></tag>
+	<tag definition="delete" startPattern="||" endPattern="||"></tag>
+	<tag definition="emph" startPattern="*" endPattern="*"></tag>
+	<tag definition="emph" startPattern="_" endPattern="_"></tag>
+	<tag definition="inlineComment" startPattern="++" endPattern="++"></tag>
+	<tag definition="inlineNative" startPattern="~" endPattern="~"></tag>
+	<tag definition="mark" startPattern="::" endPattern="::"></tag>
+	<tag definition="strong" startPattern="__" endPattern="__"></tag>
+	<tag definition="strong" startPattern="**" endPattern="**"></tag>
+	<tag definition="annotation" startPattern="{" endPattern="}"></tag>
+	<tag definition="link" startPattern="[" endPattern="]"></tag>
+	<tag definition="footnote" pattern="(fn)"></tag>
+	<tag definition="image" pattern="(img)"></tag>
+	<tag definition="video" pattern="(vid)"></tag>
+</markup>
+<string xml:space="preserve">
+<p><tags><tag kind="heading1"># </tag></tags>Elements</p>
+<p></p>
+<p><tags><tag kind="heading2">## </tag></tags>Link</p>
+<p></p>
+<p><element kind="link"><attribute identifier="URL">http://example.com/simple-link</attribute>simple link</element></p>
+<p></p>
+<p><element kind="link"><attribute identifier="URL">http://example</attribute><attribute identifier="title">Example Link</attribute>Link <element kind="strong" startTag="**">with strong</element> <element kind="footnote"><attribute identifier="text"><string xml:space="preserve">
+<p>footnote in the link</p>
+</string></attribute></element></element></p>
+<p></p>
+<p><tags><tag kind="heading2">## </tag></tags>Image</p>
+<p></p>
+<p><element kind="image"><attribute identifier="URL">http://example.com</attribute><attribute identifier="title">Example Image Title</attribute><attribute identifier="description">Example Image Desc</attribute></element></p>
+<p></p>
+<p><tags><tag kind="heading2">## </tag></tags>Video</p>
+<p></p>
+<p><element kind="video"><attribute identifier="URL">http://example.com</attribute></element></p>
+<p></p>
+<p><tags><tag kind="heading2">## </tag></tags>Footnote</p>
+<p></p>
+<p><element kind="footnote"><attribute identifier="text"><string xml:space="preserve">
+<p>This is a footnote. It can includes markups, such as:</p>
+<p></p>
+<p><element kind="link"><attribute identifier="URL">http://example.com</attribute><attribute identifier="title">Example Link Title</attribute>Link</element>, <element kind="image"><attribute identifier="URL">http://example.com</attribute><attribute identifier="title">Example Image Title</attribute><attribute identifier="description">example image description</attribute></element>, <element kind="strong" startTag="**">Strong</element>, <element kind="delete" startTag="||">Deleted</element>, <element kind="mark" startTag="::">Marked</element></p>
+</string></attribute></element></p>
+<p></p>
+<p><tags><tag kind="heading2">## </tag></tags>Annotation</p>
+<p></p>
+<p><element kind="annotation"><attribute identifier="text"><string xml:space="preserve">
+<p>inside annotation</p>
+<p><element kind="link"><attribute identifier="URL">http://e</attribute><attribute identifier="title">inside link</attribute>test</element></p>
+<p></p>
+<p><element kind="strong" startTag="**">strong</element><element closed="no" kind="strong" startTag="**"></element></p>
+</string></attribute>annotation</element></p>
+</string>
+</sheet>

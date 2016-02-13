@@ -1,0 +1,49 @@
+<sheet version="1">
+	<markup version="1" identifier="markdownxl" displayName="Markdown XL">
+		<tag definition="heading1" pattern="#"></tag>
+		<tag definition="heading2" pattern="##"></tag>
+		<tag definition="heading3" pattern="###"></tag>
+		<tag definition="heading4" pattern="####"></tag>
+		<tag definition="heading5" pattern="#####"></tag>
+		<tag definition="heading6" pattern="######"></tag>
+		<tag definition="codeblock" pattern="''"></tag>
+		<tag definition="comment" pattern="%%"></tag>
+		<tag definition="divider" pattern="----"></tag>
+		<tag definition="nativeblock" pattern="~~"></tag>
+		<tag definition="blockquote" pattern="&gt;"></tag>
+		<tag definition="orderedList" pattern="\d."></tag>
+		<tag definition="unorderedList" pattern="*"></tag>
+		<tag definition="unorderedList" pattern="+"></tag>
+		<tag definition="unorderedList" pattern="-"></tag>
+		<tag definition="code" startPattern="`" endPattern="`"></tag>
+		<tag definition="delete" startPattern="||" endPattern="||"></tag>
+		<tag definition="emph" startPattern="*" endPattern="*"></tag>
+		<tag definition="emph" startPattern="_" endPattern="_"></tag>
+		<tag definition="inlineComment" startPattern="++" endPattern="++"></tag>
+		<tag definition="inlineNative" startPattern="~" endPattern="~"></tag>
+		<tag definition="mark" startPattern="::" endPattern="::"></tag>
+		<tag definition="strong" startPattern="__" endPattern="__"></tag>
+		<tag definition="strong" startPattern="**" endPattern="**"></tag>
+		<tag definition="annotation" startPattern="{" endPattern="}"></tag>
+		<tag definition="link" startPattern="[" endPattern="]"></tag>
+		<tag definition="footnote" pattern="(fn)"></tag>
+		<tag definition="image" pattern="(img)"></tag>
+		<tag definition="video" pattern="(vid)"></tag>
+	</markup>
+	<string xml:space="preserve">
+<p><tags><tag kind="heading1"># </tag></tags>Inline</p>
+<p></p>
+<p>style <element kind="strong" startTag="**">strong</element></p>
+<p>style <element kind="emph" startTag="_">emphasis</element></p>
+<p>style <element kind="mark" startTag="::">Marked</element></p>
+<p>style <element kind="delete" startTag="||">Delete</element></p>
+<p>style <element kind="inlineComment" startTag="++">Comment</element></p>
+<p>style <element kind="code" startTag="`">code</element></p>
+<p>style <element kind="inlineNative" startTag="~">Raw Source</element></p>
+<p></p>
+<p><tags><tag>	</tag></tags>prefix with tab</p>
+<p></p>
+<p>inlien ?&lt;&gt;&lt;!@#$%^&amp;<escape>\*</escape>sss<escape>\*</escape></p>
+<p></p>
+<p></p></string>
+</sheet>
