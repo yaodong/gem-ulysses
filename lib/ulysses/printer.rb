@@ -2,10 +2,10 @@ module Ulysses
   class Printer
 
     SHEET_CONTENT_XPATH = '/sheet/string[@xml:space="preserve"]'
-    INLINE_MARKUPS = { strong: 'strong', emph: 'em', mark: 'mark',
+    SIMPLE_ELEMENTS = {strong: 'strong', emph: 'em', mark: 'mark',
                        delete: 'del', code: 'code', inlineNative: 'span' }
-    HIDDEN_MARKUPS = [:inlineComment]
-    HIDDEN_BLOCKS  = [:comment]
+    HIDDEN_ELEMENTS = [:inlineComment]
+    HIDDEN_TAGS     = [:comment]
 
     def initialize(target)
       @target        = target
@@ -15,6 +15,12 @@ module Ulysses
     end
 
     def print
+      [print_body, print_footnotes].compact.join("\n")
+    end
+
+    private
+
+    def print_body
       if @target.is_a? Library
         print_library(@target)
       elsif @target.is_a? Group
@@ -25,16 +31,6 @@ module Ulysses
         raise "Unsupported print type: #{@target.class}"
       end
     end
-
-    def footnotes
-      @footnotes
-    end
-
-    def annotations
-      @annotations
-    end
-
-    private
 
     def print_library(library)
       library.groups.map { |g| print_group(g) }.join("\n")
@@ -49,10 +45,28 @@ module Ulysses
       paragraphs.map{ |p| print_paragraph(p) }.compact.join("\n")
     end
 
+    def print_footnotes
+      return nil if @footnotes.empty?
+      html = '<ol class="footnotes">'
+      @footnotes.each_with_index do |fn, index|
+        html += "<li><a href=\"#fn-#{index+1}\">&#94;</a> #{fn}</li>"
+      end
+      html + '</ol>'
+    end
+
+    def print_annotations
+      return nil if @annotations.empty?
+      html = '<ol class="annotations">'
+      @annotations.each_with_index do |an, index|
+        html += "<li id=\"annotation-#{index + 1}\">#{an}</li>"
+      end
+      html + '</ol>'
+    end
+
     def print_paragraph(p)
       children = p.children
       tags     = (children.any? && children.first.name === 'tags') ? parse_tags(children.shift) : []
-      return nil if (tags & HIDDEN_BLOCKS).any?
+      return nil if (tags & HIDDEN_TAGS).any?
 
       content = parse_content(children)
 
@@ -99,13 +113,18 @@ module Ulysses
 
     def parse_element(node)
       kind = node.attributes['kind'].value.to_sym
-      return '' if HIDDEN_MARKUPS.include? kind
-      return send("parse_element_#{kind}", node) unless INLINE_MARKUPS.has_key?(kind)
+      return '' if HIDDEN_ELEMENTS.include? kind
+      return parse_simple_element(kind, node) if SIMPLE_ELEMENTS.has_key?(kind)
 
-      if (html_tag = INLINE_MARKUPS[kind]) === 'span'
-        '<span class="' + snake_case(kind) + '">' + parse_content(node.children) + '</span>'
+      send("parse_element_#{kind}", node)
+    end
+
+    def parse_simple_element(kind, node)
+      content = parse_content(node.children)
+      if (html_tag = SIMPLE_ELEMENTS[kind]) === 'span'
+        '<span class="' + snake_case(kind) + '">' + content + '</span>'
       else
-        "<#{html_tag}>#{parse_content(node.children)}</#{html_tag}>"
+        "<#{html_tag}>#{content}</#{html_tag}>"
       end
     end
 
@@ -128,7 +147,7 @@ module Ulysses
     def parse_element_footnote(node)
       attrs = parse_element_attributes(node)
       @footnotes << attrs['text']
-      '<sup class="footnote-ref"><a href="#fn' + @footnotes.size.to_s + '">' + @footnotes.size.to_s + '</a></sup>'
+      '<sup class="footnote-ref"><a href="#fn-' + @footnotes.size.to_s + '">' + @footnotes.size.to_s + '</a></sup>'
     end
 
     def parse_element_annotation(node)
