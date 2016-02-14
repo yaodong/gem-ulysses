@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ulysses (0.4.1)
+    ulysses (0.4.2)
       htmlentities
       nokogiri
 
