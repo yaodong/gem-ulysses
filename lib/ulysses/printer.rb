@@ -82,7 +82,7 @@ module Ulysses
     def parse_content(nodes)
       nodes.map do |node|
         if node.text?
-          node.content
+          @html_entities.encode node.content
         else
           send("parse_#{node.name}", node)
         end
