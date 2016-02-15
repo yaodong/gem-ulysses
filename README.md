@@ -1,6 +1,6 @@
 # Ulysses
 
-[![Join the chat at https://gitter.im/yaodong/gem-ulysses](https://badges.gitter.im/yaodong/gem-ulysses.svg)](https://gitter.im/yaodong/gem-ulysses?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat at https://gitter.im/yaodong/gem-ulysses](https://badges.gitter.im/yaodong/gem-ulysses.svg)](https://gitter.im/yaodong/gem-ulysses?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Build Status](https://travis-ci.org/yaodong/gem-ulysses.svg?branch=master)](https://travis-ci.org/yaodong/gem-ulysses)
 
 This is a library to export your to HTML files. It still in development.
 
@@ -25,23 +25,23 @@ Or install it yourself as:
 Get your library:
 
     library = Ulysses::Library.new
-    
+
 Get groups from library
 
     groups = library.groups
-    
+
 Get children groups:
 
     group = library.groups.first
     children = group.children
-    
+
 Get Sheets:
 
     group.sheets
-    
+
 Print sheet to HTML:
 
-    printer = Ulysses::Printer.new(library) # also applies to group or sheet 
+    printer = Ulysses::Printer.new(library) # also applies to group or sheet
     html = printer.print
 
 ## Development
