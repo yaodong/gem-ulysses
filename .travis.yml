@@ -1,4 +1,6 @@
 language: ruby
+script: "rake test"
 rvm:
+  - 1.9.3
   - 2.2.2
 before_install: gem install bundler -v 1.11.2
