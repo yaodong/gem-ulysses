@@ -16,6 +16,10 @@ module Ulysses
       @display_name ||= info['displayName'].content
     end
 
+    def icon_name
+      @icon_name ||= (info['userIconName'] ? info['userIconName'].content : 'sheets')
+    end
+
     def children
       @children ||= parse_children
     end
